@@ -20,13 +20,27 @@
         android:id="@+id/textViewTituloPelicula"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:layout_marginTop="8dp"
         android:lines="2"
         android:maxLines="2"
+        android:text="TextView"
         android:textColor="@color/white"
         android:textSize="12sp"
-        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/portada" />
+
+    <TextView
+        android:id="@+id/txtviewNota"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="TextView"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="@+id/textViewTituloPelicula"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/textViewTituloPelicula"
         app:layout_constraintTop_toBottomOf="@+id/portada" />
 </androidx.constraintlayout.widget.ConstraintLayout>

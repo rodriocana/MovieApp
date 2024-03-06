@@ -21,17 +21,18 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.movieapp.Activities.Adaptadores.CategoriaAdaptador;
 import com.example.movieapp.Activities.Adaptadores.ListaPeliculasAdaptador;
+import com.example.movieapp.Activities.Adaptadores.PeliculasMejorValoradaAdaptador;
 import com.example.movieapp.Activities.Adaptadores.SliderAdaptador;
 import com.example.movieapp.Activities.Domain.ListaPeliculas;
+import com.example.movieapp.Activities.Domain.PeliculasMejorValorada;
+import com.example.movieapp.Activities.Domain.Result;
 import com.example.movieapp.Activities.Domain.SliderItems;
 import com.example.movieapp.Activities.Domain.itemGeneros;
 import com.example.movieapp.R;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -47,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ProgressBar loading1,loading2,loading3;
 
-    RecyclerView.Adapter adaptadorMejoresPeliculas,adaptadorEstrenos,adaptadorCategorias;
+    RecyclerView.Adapter adaptadorMejoresPeliculas,adaptadorEstrenos,adaptadorCategorias, PeliculasMejorValoradaAdaptador;
     private RecyclerView RecyclerViewMejoresPeliculas, RecyclerViewEstrenos, RecyclerViewCategorias;
 
 
@@ -59,10 +60,16 @@ public class MainActivity extends AppCompatActivity {
 
         initView();
         Banners();
-        //SendRequestMejoresPeliculas();
-        SendRequestProximosEstrenos();
+
+
+        MejorValoradas("https://api.themoviedb.org/3/movie/top_rated?page=1&api_key=6ce135bf1bb56cee4a7652b7dc4a00b1"); // funciona usando la api nueva
+        //SendRequestProximosEstrenos();
         SendRequestProximosCategorias();
-        SendRequestMejoresPeliculas2();
+
+        Estrenos("https://api.themoviedb.org/3/movie/now_playing?api_key=6ce135bf1bb56cee4a7652b7dc4a00b1");
+
+        //SendRequestMejoresPeliculas2();  // funciona usando la api antigua
+
 
 
     }
@@ -151,6 +158,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
     public void SendRequestProximosCategorias(){
 
         mRequestQueue = Volley.newRequestQueue(this);
@@ -211,62 +219,76 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-    public void SendRequestMejoresPeliculas2() {
+    private void MejorValoradas(String url) {
         mRequestQueue = Volley.newRequestQueue(this);
         loading1.setVisibility(View.VISIBLE);
 
-        List<ListaPeliculas> peliculasList = new ArrayList<>(); // Lista para almacenar todas las películas
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Gson gson = new Gson();
+                        loading1.setVisibility(View.GONE);
+                        PeliculasMejorValorada peliculasMejorValorada = gson.fromJson(response, PeliculasMejorValorada.class);
 
-        // Definir las URLs de las solicitudes
-        String[] urls = {"https://moviesapi.ir/api/v1/movies?page=1",
-                "https://moviesapi.ir/api/v1/movies?page=2",
-                "https://moviesapi.ir/api/v1/movies?page=3"};
+                        // Verificar si se obtuvieron resultados
+                        if (peliculasMejorValorada != null && peliculasMejorValorada.getResults() != null) {
+                            List<Result> results = peliculasMejorValorada.getResults();
 
-        for (String url : urls) {
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    Gson gson = new Gson();
-                    loading1.setVisibility(View.GONE);
-                    ListaPeliculas items = gson.fromJson(response, ListaPeliculas.class);
-                    peliculasList.add(items);
-
-                    // Verificar si todas las solicitudes se han completado
-                    if (peliculasList.size() == urls.length) {
-                        // Todas las solicitudes se han completado, mostrar las películas
-                        showMovies(peliculasList);
+                            // Crear adaptador con la lista de resultados
+                            PeliculasMejorValoradaAdaptador adaptador = new PeliculasMejorValoradaAdaptador(results);
+                            RecyclerViewMejoresPeliculas.setAdapter(adaptador);
+                        } else {
+                            // Manejar caso de resultados nulos o vacíos
+                            Log.e("Error", "No se encontraron resultados");
+                        }
                     }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    loading1.setVisibility(View.GONE);
-                    Log.i("Fallos", "OnError response " + error.toString());
-                }
-            });
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                loading1.setVisibility(View.GONE);
+                Log.i("Fallos", "OnError response " + error.toString());
+            }
+        });
 
-            mRequestQueue.add(stringRequest); // Agregar la solicitud a la cola de solicitudes
-        }
+        mRequestQueue.add(stringRequest);
     }
 
-    private void showMovies(List<ListaPeliculas> peliculasList) {
-        // Combinar todas las listas de películas en una sola lista
-        List<com.example.movieapp.Domain.Datum> combinedMovies = new ArrayList<>();
+    private void Estrenos(String url) {
+        mRequestQueue = Volley.newRequestQueue(this);
+        loading3.setVisibility(View.VISIBLE);
 
-        // Agregar las películas de cada página al principio de la lista combinada
-        for (int i = peliculasList.size() - 1; i >= 0; i--) {
-            combinedMovies.addAll(0, peliculasList.get(i).getData());
-        }
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Gson gson = new Gson();
+                        loading3.setVisibility(View.GONE);
+                        PeliculasMejorValorada peliculasMejorValorada = gson.fromJson(response, PeliculasMejorValorada.class);
 
-        // Crear una instancia de ListaPeliculas y establecer la lista combinada de películas
-        ListaPeliculas combinedListaPeliculas = new ListaPeliculas();
-        combinedListaPeliculas.setData(combinedMovies);
+                        // Verificar si se obtuvieron resultados
+                        if (peliculasMejorValorada != null && peliculasMejorValorada.getResults() != null) {
+                            List<Result> results = peliculasMejorValorada.getResults();
 
-        // Crear un adaptador con la lista combinada de películas
-        adaptadorMejoresPeliculas = new ListaPeliculasAdaptador(combinedListaPeliculas);
-        RecyclerViewMejoresPeliculas.setAdapter(adaptadorMejoresPeliculas);
+                            // Crear adaptador con la lista de resultados
+                            PeliculasMejorValoradaAdaptador adaptadorEstrenos = new PeliculasMejorValoradaAdaptador(results);
+                            RecyclerViewEstrenos.setAdapter(adaptadorEstrenos);
+                        } else {
+                            // Manejar caso de resultados nulos o vacíos
+                            Log.e("Error", "No se encontraron resultados");
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                loading1.setVisibility(View.GONE);
+                Log.i("Fallos", "OnError response " + error.toString());
+            }
+        });
+
+        mRequestQueue.add(stringRequest);
     }
+
 
 
     @Override

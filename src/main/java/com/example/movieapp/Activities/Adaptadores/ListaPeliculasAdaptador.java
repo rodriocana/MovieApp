@@ -60,6 +60,7 @@ public class ListaPeliculasAdaptador  extends RecyclerView.Adapter<ListaPelicula
     @Override
     public int getItemCount() {
         return items.getData().size();
+
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

@@ -137,7 +137,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
-                android:id="@+id/textviewProximosEstrenos"
+                android:id="@+id/textviewCartelera"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="12dp"
@@ -145,7 +145,7 @@
                 android:layout_marginTop="12dp"
                 android:ems="10"
                 android:inputType="text"
-                android:text="Próximos estrenos"
+                android:text="En cartelera"
                 android:textColor="@color/yellow"
                 android:textSize="18dp"
                 android:textStyle="bold" />

@@ -19,12 +19,13 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.movieapp.Activities.Adaptadores.AdaptadorGeneros;
 import com.example.movieapp.Activities.Adaptadores.CategoriaAdaptador;
-import com.example.movieapp.Activities.Adaptadores.ListaPeliculasAdaptador;
-import com.example.movieapp.Activities.Adaptadores.PeliculasMejorValoradaAdaptador;
+import com.example.movieapp.Activities.Adaptadores.AdaptadorPelicula;
 import com.example.movieapp.Activities.Adaptadores.SliderAdaptador;
-import com.example.movieapp.Activities.Domain.ListaPeliculas;
-import com.example.movieapp.Activities.Domain.PeliculasMejorValorada;
+import com.example.movieapp.Activities.Domain.Geneross;
+import com.example.movieapp.Activities.Domain.Genre;
+import com.example.movieapp.Activities.Domain.Pelicula;
 import com.example.movieapp.Activities.Domain.Result;
 import com.example.movieapp.Activities.Domain.SliderItems;
 import com.example.movieapp.Activities.Domain.itemGeneros;
@@ -62,13 +63,17 @@ public class MainActivity extends AppCompatActivity {
         Banners();
 
 
-        MejorValoradas("https://api.themoviedb.org/3/movie/top_rated?page=1&api_key=6ce135bf1bb56cee4a7652b7dc4a00b1"); // funciona usando la api nueva
-        //SendRequestProximosEstrenos();
-        SendRequestProximosCategorias();
+        MejorValoradas("https://api.themoviedb.org/3/movie/top_rated?language=es-ES?page=1&api_key=6ce135bf1bb56cee4a7652b7dc4a00b1"); // funciona usando la api nueva
 
-        Estrenos("https://api.themoviedb.org/3/movie/now_playing?api_key=6ce135bf1bb56cee4a7652b7dc4a00b1");
+        //SendRequestProximosCategorias();
 
-        //SendRequestMejoresPeliculas2();  // funciona usando la api antigua
+        Generos("https://api.themoviedb.org/3/genre/movie/list?language=es-ES?page=1&api_key=6ce135bf1bb56cee4a7652b7dc4a00b1");
+
+        Estrenos("https://api.themoviedb.org/3/movie/now_playing?language=es-ES?page=1&api_key=6ce135bf1bb56cee4a7652b7dc4a00b1");
+
+        //Generos("https://api.themoviedb.org/3/genre/movie/list?page=1&api_key=6ce135bf1bb56cee4a7652b7dc4a00b1");
+
+
 
 
 
@@ -125,37 +130,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void SendRequestMejoresPeliculas(){
-
-        mRequestQueue = Volley.newRequestQueue(this);
-        loading1.setVisibility(View.VISIBLE);
-        mStringRequest = new StringRequest(Request.Method.GET, "https://moviesapi.ir/api/v1/movies?page=1", new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-
-                // aqui es donde pido los datos a la api y los datos descargados se guardan en la lista pelicula y se muestran en el recycle view
-                Gson gson = new Gson();
-                loading1.setVisibility(View.GONE);
-                ListaPeliculas items = gson.fromJson(response, ListaPeliculas.class);
-                adaptadorMejoresPeliculas = new ListaPeliculasAdaptador(items);
-                RecyclerViewMejoresPeliculas.setAdapter(adaptadorMejoresPeliculas);
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-                loading1.setVisibility(View.GONE);
-                Log.i("Fallos", "OnError response " + error.toString());
-            }
-        });
-
-        mRequestQueue.add(mStringRequest); // aqui finalizo el pedido de datos añadiendolo a mRequestQueue
-
-    }
-
-
-
 
 
 
@@ -189,35 +163,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void SendRequestProximosEstrenos(){
-
-        mRequestQueue = Volley.newRequestQueue(this);
-        loading3.setVisibility(View.VISIBLE);
-        mStringRequest3 = new StringRequest(Request.Method.GET, "https://moviesapi.ir/api/v1/movies?page=3", new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-
-                // aqui es donde pido los datos a la api y los datos descargados se guardan en la lista pelicula y se muestran en el recycle view
-                Gson gson = new Gson();
-                loading3.setVisibility(View.GONE);
-                ListaPeliculas items = gson.fromJson(response, ListaPeliculas.class);
-                adaptadorEstrenos = new ListaPeliculasAdaptador(items);
-                RecyclerViewEstrenos.setAdapter(adaptadorEstrenos);
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-                loading3.setVisibility(View.GONE);
-                Log.i("Fallos", "OnError response " + error.toString());
-            }
-        });
-
-        mRequestQueue.add(mStringRequest3);  // aqui finalizo el pedido de datos añadiendolo a mRequestQueue
-
-    }
-
 
     private void MejorValoradas(String url) {
         mRequestQueue = Volley.newRequestQueue(this);
@@ -229,14 +174,14 @@ public class MainActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         Gson gson = new Gson();
                         loading1.setVisibility(View.GONE);
-                        PeliculasMejorValorada peliculasMejorValorada = gson.fromJson(response, PeliculasMejorValorada.class);
+                        Pelicula peliculasMejorValorada = gson.fromJson(response, Pelicula.class);
 
                         // Verificar si se obtuvieron resultados
                         if (peliculasMejorValorada != null && peliculasMejorValorada.getResults() != null) {
                             List<Result> results = peliculasMejorValorada.getResults();
 
                             // Crear adaptador con la lista de resultados
-                            PeliculasMejorValoradaAdaptador adaptador = new PeliculasMejorValoradaAdaptador(results);
+                            AdaptadorPelicula adaptador = new AdaptadorPelicula(results);
                             RecyclerViewMejoresPeliculas.setAdapter(adaptador);
                         } else {
                             // Manejar caso de resultados nulos o vacíos
@@ -254,6 +199,41 @@ public class MainActivity extends AppCompatActivity {
         mRequestQueue.add(stringRequest);
     }
 
+    private void Generos(String url) {
+        mRequestQueue = Volley.newRequestQueue(this);
+        loading2.setVisibility(View.VISIBLE);
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Gson gson = new Gson();
+                        loading2.setVisibility(View.GONE);
+                        Geneross generos = gson.fromJson(response, Geneross.class);
+
+                        // Verificar si se obtuvieron resultados
+                        if (generos != null && generos.getGenres() != null) {
+                            List<Genre> results = generos.getGenres();
+
+                            // Crear adaptador con la lista de resultados
+                            AdaptadorGeneros adaptador = new AdaptadorGeneros(results);
+                            RecyclerViewCategorias.setAdapter(adaptador);
+                        } else {
+                            // Manejar caso de resultados nulos o vacíos
+                            Log.e("Error", "No se encontraron resultados");
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                loading2.setVisibility(View.GONE);
+                Log.i("Fallos", "OnError response " + error.toString());
+            }
+        });
+
+        mRequestQueue.add(stringRequest);
+    }
+
     private void Estrenos(String url) {
         mRequestQueue = Volley.newRequestQueue(this);
         loading3.setVisibility(View.VISIBLE);
@@ -264,14 +244,14 @@ public class MainActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         Gson gson = new Gson();
                         loading3.setVisibility(View.GONE);
-                        PeliculasMejorValorada peliculasMejorValorada = gson.fromJson(response, PeliculasMejorValorada.class);
+                        Pelicula peliculasMejorValorada = gson.fromJson(response, Pelicula.class);
 
                         // Verificar si se obtuvieron resultados
                         if (peliculasMejorValorada != null && peliculasMejorValorada.getResults() != null) {
                             List<Result> results = peliculasMejorValorada.getResults();
 
                             // Crear adaptador con la lista de resultados
-                            PeliculasMejorValoradaAdaptador adaptadorEstrenos = new PeliculasMejorValoradaAdaptador(results);
+                            AdaptadorPelicula adaptadorEstrenos = new AdaptadorPelicula(results);
                             RecyclerViewEstrenos.setAdapter(adaptadorEstrenos);
                         } else {
                             // Manejar caso de resultados nulos o vacíos
@@ -281,7 +261,7 @@ public class MainActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                loading1.setVisibility(View.GONE);
+                loading3.setVisibility(View.GONE);
                 Log.i("Fallos", "OnError response " + error.toString());
             }
         });

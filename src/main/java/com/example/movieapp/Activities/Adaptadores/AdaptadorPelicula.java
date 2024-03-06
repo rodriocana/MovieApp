@@ -16,22 +16,19 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.movieapp.Activities.Activities.detalleActivity;
-import com.example.movieapp.Activities.Domain.PeliculasMejorValorada;
 import com.example.movieapp.Activities.Domain.Result;
 import com.example.movieapp.R;
-
-import org.w3c.dom.Text;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.List;
 
-public class PeliculasMejorValoradaAdaptador extends RecyclerView.Adapter<PeliculasMejorValoradaAdaptador.ViewHolder> {
+public class AdaptadorPelicula extends RecyclerView.Adapter<AdaptadorPelicula.ViewHolder> {
 
     private List<Result> itemss;
     private Context context;
 
-    public PeliculasMejorValoradaAdaptador(List<Result> itemss) {
+    public AdaptadorPelicula(List<Result> itemss) {
         this.itemss = itemss;
     }
 
@@ -64,7 +61,7 @@ public class PeliculasMejorValoradaAdaptador extends RecyclerView.Adapter<Pelicu
 
         Glide.with(context)
                 .load(imageUrl)
-                .apply(requestOptions)
+                .apply(new RequestOptions().centerCrop())
                 .into(holder.portada);
 
         holder.itemView.setOnClickListener(v -> {

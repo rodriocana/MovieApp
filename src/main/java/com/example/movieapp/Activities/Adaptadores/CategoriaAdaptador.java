@@ -48,8 +48,11 @@ public class CategoriaAdaptador extends RecyclerView.Adapter<CategoriaAdaptador.
         holder.TextoTitlo.setText(items.get(position).getName());
 
 
-        holder.itemView.setOnClickListener(v -> {
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+            }
         });
     }
 

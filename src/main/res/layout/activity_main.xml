@@ -63,9 +63,10 @@
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="0dp"
                 android:ems="10"
+                android:gravity="center_horizontal"
                 android:inputType="text"
                 android:text="Categorías"
-                android:textColor="@color/yellow"
+                android:textColor="@color/orange"
                 android:textSize="18dp"
                 android:textStyle="bold" />
 
@@ -107,7 +108,7 @@
                 android:ems="10"
                 android:inputType="text"
                 android:text="Mejores películas"
-                android:textColor="@color/yellow"
+                android:textColor="@color/orange"
                 android:textSize="18dp"
                 android:textStyle="bold" />
 
@@ -148,7 +149,7 @@
                 android:ems="10"
                 android:inputType="text"
                 android:text="En cartelera"
-                android:textColor="@color/yellow"
+                android:textColor="@color/orange"
                 android:textSize="18dp"
                 android:textStyle="bold" />
 
@@ -182,6 +183,7 @@
         </LinearLayout>
     </ScrollView>
 
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="100dp"
@@ -189,15 +191,29 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <com.google.android.material.bottomappbar.BottomAppBar
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardViewId"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_gravity="bottom"
-            android:backgroundTint="@color/dark_blue">
+            android:layout_margin="0dp"
+            android:alpha="1"
+            app:cardCornerRadius="0dp"
+            app:cardElevation="4dp"
+            app:strokeColor="@color/white"
+            app:strokeWidth="1dp"
+            tools:visibility="visible">
+
+
+            <com.google.android.material.bottomappbar.BottomAppBar
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:backgroundTint="@color/dark_blue" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="5dp"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -305,6 +321,7 @@
                 </LinearLayout>
             </LinearLayout>
 
-        </com.google.android.material.bottomappbar.BottomAppBar>
+        </com.google.android.material.card.MaterialCardView>
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
